@@ -1,0 +1,25 @@
+name: fetch-audio
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download wav files
+        run: |
+          curl -sL "https://p26-flow-sign.byteimg.com/tos-cn-i-ik7evvg4ik/9434cfa1beff46b7ab5c420dbb51099b~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20261026103909C8BA1A08701565171CD9&rrcfp=935dee89&x-expires=1793589638&x-signature=qXOxxmmx48XKhc3XtSvigJi4kew%3D" -o silva_ref.wav
+          curl -sL "https://p26-flow-sign.byteimg.com/tos-cn-i-ik7evvg4ik/0e0ff56429194429a99a0129a75f08aa~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20261026103909C8BA1A08701565171CD9&rrcfp=935dee89&x-expires=1793589638&x-signature=J%2BLl8ybj7236RVgZO%2FT0PjikJtc%3D" -o vehran_ref.wav
+          file silva_ref.wav vehran_ref.wav
+          ls -la *.wav
+      - name: Commit wav files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add silva_ref.wav vehran_ref.wav
+          git commit -m "Add binary wav reference files" || echo "nothing to commit"
+          git push
